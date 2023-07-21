@@ -5,7 +5,6 @@ import {useScoreStore} from '@/stores/score';
 
 export default{
     setup(){
-        console.log("score setup")
 
     },
     data(){

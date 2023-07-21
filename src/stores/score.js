@@ -18,7 +18,6 @@ export const useScoreStore = defineStore('score', () => {
 
   function getBestScore() {
     let currnbest = localStorage.getItem("best_score")
-    console.log(currnbest)
     return parseFloat(currnbest)
   }
 

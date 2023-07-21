@@ -3,6 +3,7 @@ import { useScoreStore } from "@/stores/score";
 import { useTimerStore } from '@/stores/timer';
 import { useGameAreaStore } from '@/stores/game_area';
 import { useGameStateStore } from '@/stores/game_state';
+import $ from 'jquery';
 
 export default {
     props: ['matiere'],
@@ -12,6 +13,13 @@ export default {
         const timer = useTimerStore()
         const game_area = useGameAreaStore()
         const game_state = useGameStateStore()
+        const click_audio = new Audio("/click.m4a")
+        const gameover_audio = new Audio("/gameover.m4a")
+        gameover_audio.volume = 0.5
+        const music_back = new Audio('/music.mp3')
+        music_back.volume = 0.2
+
+
 
         return {
             score,
@@ -30,28 +38,37 @@ export default {
             show_gameover: false,
 
             hide_startup_menu: false,
-            btn_restart_disabled: true
+            btn_restart_disabled: true,
+
+            click_audio,
+            gameover_audio,
+            music_back
+
 
         }
 
     },
     mounted() {
         // this.animate_matiere()
+        $('.btn').on('click', () => {
+            this.click_audio.play()
+        })
 
     },
 
     methods: {
 
-        start_game(){
+        start_game() {
             this.game_state.start()
-            console.log(this.game_state.started)
             this.animate_matiere()
-            this.hide_startup_menu= true
+            this.hide_startup_menu = true
+            this.music_back.play()
         },
-        
+
         click_matiere() {
             if (this.timer.time > 0) {
                 this.score.increment()
+                this.click_audio.play()
                 // this.change_position()
             }
         },
@@ -61,11 +78,12 @@ export default {
 
                 if (this.score.change) {
                     clearInterval(this.matiere_id)
-                    console.log(1000 - this.score.multiplier)
+                    // console.log(1000 - this.score.multiplier)
                     this.animate_matiere()
                     this.score.change = false
                 }
                 if (this.timer.time <= 0) {
+                    this.gameover_audio.play()
                     setTimeout(() => {
                         this.btn_restart_disabled = false
                         // console.log(this.btn_restart_disabled)
@@ -73,6 +91,8 @@ export default {
                     clearInterval(this.matiere_id)
                     this.show_gameover = true
                     this.game_state.stop()
+                    this.music_back.pause()
+                    this.music_back.currentTime = 0
                 }
             }, 1000 - this.score.multiplier)
         },
@@ -80,11 +100,11 @@ export default {
         change_position() {
             this.dest_x = parseInt(Math.random() * (this.game_area.width - 100));
             this.dest_y = parseInt(Math.random() * (this.game_area.height - 100))
-            console.log(this.dest_x, this.dest_y)
+            // console.log(this.dest_x, this.dest_y)
             this.transform = `translate(${this.dest_x}px, ${this.dest_y}px)`;
         },
         restart() {
-            if (!this.btn_restart_disabled){
+            if (!this.btn_restart_disabled) {
 
                 this.timer.restart()
                 this.score.restart()
@@ -104,17 +124,20 @@ export default {
         <!-- <div class="matiere-label">BACC</div> -->
         <img src="@/assets/hat.png" alt="">
     </div>
-    <div :class="{hide: this.hide_startup_menu}" class="startupmenu-parent">
+    <div :class="{ hide: this.hide_startup_menu }" class="startupmenu-parent">
 
-        <div  class="startupmenu" >
+        <div class="startupmenu">
             <div class="logo">
                 <img src="@/assets/logo.png" width="200" alt="">
             </div>
             <div class="hint">
-                <p>➡2023 isika zao, nisy fuite ny sujet dia lasa mirava @ 21h ny mpanala fanadinana <font-awesome-icon color="yellow" :icon="['fas', 'fa-face-frown']" size="lg" class="icon"/></p>
-                <p>Vitao ny fanadinana anao alohan'ny hatapan'ny Jiro ! <font-awesome-icon color="yellow" :icon="['fas', 'fa-face-grin-tears']" size="lg" class="icon"/></p>
+                <p>➡2023 isika zao, nisy fuite ny sujet dia lasa mirava @ 21h ny mpanala fanadinana <font-awesome-icon
+                        color="yellow" :icon="['fas', 'fa-face-frown']" size="lg" class="icon" /></p>
+                <p>Vitao ny fanadinana anao alohan'ny hatapan'ny Jiro ! <font-awesome-icon color="yellow"
+                        :icon="['fas', 'fa-face-grin-tears']" size="lg" class="icon" /></p>
                 <p>(Cliqueo lay sary misy soratra bacc)</p>
-                <p>(Cliqueo kosa lay <span class="btn-help" @click="show_hint_fun()"> <i class="fa fa-question"></i> </span> raha mila fanazavana fanampiny)</p>
+                <p>(Cliqueo kosa lay <span class="btn-help" @click="show_hint_fun()"> <i class="fa fa-question"></i> </span>
+                    raha mila fanazavana fanampiny)</p>
             </div>
             <div class="btn" @click="start_game()">Hanomboka</div>
         </div>
@@ -123,25 +146,28 @@ export default {
         <div class="img-blackout">
             <img src="@/assets/blackout.png" alt="blackout image">
         </div>
-        <font-awesome-icon :icon="['fas', 'fa-face-angry']" size="lg" class="icon-angry"/> 
+        <font-awesome-icon :icon="['fas', 'fa-face-angry']" size="lg" class="icon-angry" />
         <h2>OOoohh, Tapaka ndray ny Jiro</h2>
         <div class="score-section">
             <p>Ny naotinao : {{ this.score.score / 2 }} / 20 <br>
                 <span v-if="parseFloat(this.score.score) <= 9">
-                 Noho ny ezaka nataon'ny filoha de tsy afaka enao 😘
+                    Noho ny ezaka nataon'ny filoha de tsy afaka enao 😘
 
                 </span>
                 <span v-else>
 
-                    
+
                     Noho ny ezaka nataon'ny filoha de mba nahazo mention {{ this.score.mention }} enao 😘
                 </span>
             </p>
         </div>
         <p>Amerina ? </p>
         <div class="row">
-            <div class="btn" @click="restart()"> <font-awesome-icon :icon="['fas', 'fa-check']" size="lg" class="icon"/> Eny</div>
-            <div class="btn other-btn" @click="restart()"><font-awesome-icon :icon="['fas', 'fa-xmark']" size="lg" class="icon"/>Eny fa miloko hafa <font-awesome-icon color="yellow" :icon="['fas', 'fa-face-grin-tears']" size="lg" class="icon"/> </div>
+            <div class="btn" @click="restart()"> <font-awesome-icon :icon="['fas', 'fa-check']" size="lg" class="icon" />
+                Eny</div>
+            <div class="btn other-btn" @click="restart()"><font-awesome-icon :icon="['fas', 'fa-xmark']" size="lg"
+                    class="icon" />Eny fa miloko hafa <font-awesome-icon color="yellow"
+                    :icon="['fas', 'fa-face-grin-tears']" size="lg" class="icon" /> </div>
 
         </div>
     </div>
@@ -151,6 +177,7 @@ export default {
 .hide {
     display: none;
 }
+
 .matiere {
     width: 100px;
     height: 100px;
@@ -168,13 +195,13 @@ export default {
     position: absolute;
 }
 
-.hint{
+.hint {
     background-color: #798361;
     padding: 10px;
     border-radius: 10px;
 }
 
-.matiere img{
+.matiere img {
     width: 100%;
 }
 
@@ -191,17 +218,19 @@ export default {
         display: block;
     }
 }
-.startupmenu-parent{
+
+.startupmenu-parent {
     position: absolute;
     top: 0;
     z-index: 99;
     background-color: #333333;
     width: 100%;
     height: 100%;
-    
+
 }
-.startupmenu{
-    
+
+.startupmenu {
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -210,15 +239,16 @@ export default {
     padding: 5px;
 }
 
-.startupmenu p{
+.startupmenu p {
     color: white;
     text-align: center;
 }
-@media (min-width: 500px){
-    .startupmenu p{
 
-    font-size: large;
-}
+@media (min-width: 500px) {
+    .startupmenu p {
+
+        font-size: large;
+    }
 }
 
 .game_over {
@@ -249,7 +279,7 @@ export default {
     font-weight: bold;
 }
 
-.btn .icon{
+.btn .icon {
     margin-inline: 10px;
 }
 
@@ -272,29 +302,29 @@ export default {
 
 }
 
-.img-blackout{
+.img-blackout {
     max-width: 100px;
-    
+
 }
 
-.img-blackout img{
+.img-blackout img {
     max-width: 100%;
     height: auto;
     width: auto\9;
 }
-.icon-angry{
+
+.icon-angry {
     font-size: 2em;
     color: rgb(255, 94, 0);
 
 }
 
-.score-section p{
+.score-section p {
     text-align: center;
 }
 
-@media (max-width: 500px){
-    p{
+@media (max-width: 500px) {
+    p {
         font-size: 14px;
     }
-}
-</style>
+}</style>

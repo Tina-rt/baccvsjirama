@@ -20,11 +20,12 @@ export default {
         label: 'Math'
       },
 
-      show_hint: false
+      show_hint: false,
     }
   },
   mounted() {
     $('.help').hide()
+    
   },
 
   methods: {

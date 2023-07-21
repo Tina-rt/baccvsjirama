@@ -9,7 +9,6 @@ export const useGameStateStore = defineStore('game_state', ()=>{
     function start() {
         timer.start()
         started.value = true
-        console.log("Started")
     }
     function stop(){
         timer.stop()
