@@ -37,7 +37,7 @@ export const useScoreStore = defineStore('score', () => {
     if (score.value % 5 == 0) {
       increment_multiplier()
     }
-    if (score.value / 2 < 9.5) {
+    if (score.value / 2 < 12) {
       mention.value = mentions_list.value[0]
     }
     else if (score.value / 2 < 14) {

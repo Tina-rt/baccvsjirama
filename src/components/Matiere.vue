@@ -112,6 +112,7 @@ export default {
                 this.animate_matiere()
 
                 this.btn_restart_disabled = true
+                this.music_back.play()
             }
         }
     }
@@ -150,7 +151,7 @@ export default {
         <h2>OOoohh, Tapaka ndray ny Jiro</h2>
         <div class="score-section">
             <p>Ny naotinao : {{ this.score.score / 2 }} / 20 <br>
-                <span v-if="parseFloat(this.score.score) <= 9">
+                <span v-if="parseFloat(this.score.score) /2 <= 9">
                     Noho ny ezaka nataon'ny filoha de tsy afaka enao 😘
 
                 </span>
