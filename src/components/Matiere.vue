@@ -114,6 +114,7 @@ export default {
                 <p>➡2023 isika zao, nisy fuite ny sujet dia lasa mirava @ 21h ny mpanala fanadinana <font-awesome-icon color="yellow" :icon="['fas', 'fa-face-frown']" size="lg" class="icon"/></p>
                 <p>Vitao ny fanadinana anao alohan'ny hatapan'ny Jiro ! <font-awesome-icon color="yellow" :icon="['fas', 'fa-face-grin-tears']" size="lg" class="icon"/></p>
                 <p>(Cliqueo lay sary misy soratra bacc)</p>
+                <p>(Cliqueo kosa lay <span class="btn-help" @click="show_hint_fun()"> <i class="fa fa-question"></i> </span> raha mila fanazavana fanampiny)</p>
             </div>
             <div class="btn" @click="start_game()">Hanomboka</div>
         </div>
@@ -167,6 +168,12 @@ export default {
     position: absolute;
 }
 
+.hint{
+    background-color: #798361;
+    padding: 10px;
+    border-radius: 10px;
+}
+
 .matiere img{
     width: 100%;
 }
@@ -206,7 +213,12 @@ export default {
 .startupmenu p{
     color: white;
     text-align: center;
+}
+@media (min-width: 500px){
+    .startupmenu p{
+
     font-size: large;
+}
 }
 
 .game_over {
@@ -278,5 +290,11 @@ export default {
 
 .score-section p{
     text-align: center;
+}
+
+@media (max-width: 500px){
+    p{
+        font-size: 14px;
+    }
 }
 </style>
